@@ -1,7 +1,0 @@
----
-applications:
-- name: skipr
-  memory: 128M
-  path: backend/
-  buildpack: https://github.com/heroku/heroku-buildpack-python.git
-  command: python backend/main.py
