@@ -1,5 +1,4 @@
-from flask import Flask, request, send_from_directory
-import flask
+from flask import Flask, request, send_from_directory, jsonify
 import os
 import json
 import time
@@ -29,7 +28,7 @@ def createRoom():
 
     roomId = resp.json()['id']
 
-    return flask.jsonify(id=roomId)
+    return jsonify(id=roomId)
 
 
 def setupDB(services):
