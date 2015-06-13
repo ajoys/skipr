@@ -1,6 +1,7 @@
-from flask import Flask, request, send_from_directory
+from flask import Flask, request, send_from_directory, jsonify
 import os
 import json
+import time
 import requests
 import secrets
 import cloudant
@@ -15,6 +16,20 @@ def root():
 @app.route('/hello')
 def hello():
     return 'Hello World! (Skipr Test)'
+
+
+@app.route('/room', methods=['POST'])
+def createRoom():
+
+    # Persist room in db
+    resp = app.db.post(params={
+        'createdAt' : int(time.time() * 1000)
+        })
+
+    roomId = resp.json()['id']
+
+    return jsonify(id=roomId)
+
 
 def setupDB(services):
     '''
