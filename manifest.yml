@@ -2,3 +2,4 @@
 applications:
 - name: skipr
   memory: 128M
+  path: backend/
