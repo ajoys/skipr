@@ -25,3 +25,12 @@ proguard/
 
 # Log Files
 *.log
+
+#Python
+*.pyc
+secrets.py
+
+#OSX
+.DS_Store
+.AppleDouble
+.LSOverride
