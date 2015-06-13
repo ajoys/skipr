@@ -1,4 +1,4 @@
 requests==2.7.0
 Flask==0.10.1
 cloudant
-requests-futures==0.9.4
+requests[security]
