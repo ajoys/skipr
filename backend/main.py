@@ -143,6 +143,40 @@ def getHighestVotedTrack(roomId=None):
         return jsonify(room), 404
 
 
+@app.route('/room/<roomId>/vote', methods=['PUT'])
+def voteForTracks(roomId=None):
+
+    # Get parameters from raw json
+    if not request.json:
+        return jsonify({'error':'Missing parameters'}), 400
+
+    userId = request.json['nameValuePairs']['userId']
+    ratedTracks = request.json['nameValuePairs']['tracks']['nameValuePairs']
+
+
+    room = app.db.document(roomId).get().json()
+    if 'tracks' in room:
+
+        # Loop over playlist and vote for tracks
+        changed = 0
+        for track in room['tracks']:
+            if track['id'] in ratedTracks:
+                if userId not in track['voters']:
+                    track['votes'] += ratedTracks[track['id']]
+                    track['voters'].append(userId)
+                    changed += 1
+
+        # Save updated tracks
+        resp = app.db.document(roomId).merge({'tracks': room['tracks']})
+        data = resp.json()
+        data['votedFor'] = changed
+
+        return jsonify(data), resp.status_code
+
+    else:
+        return jsonify(room), 404
+
+
 def setupDB(services):
     '''
     Setup a cloudant DB object
