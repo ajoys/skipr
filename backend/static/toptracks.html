@@ -16,6 +16,11 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <style type="text/css">
+    .before-element{
+      padding-bottom: 10px;
+    }
+    </style>
   </head>
   <body>
     <nav class="navbar navbar-default navbar-fixed-top default-primary-color">
@@ -42,29 +47,61 @@
 
     <section>
       <div class="container">
-        <h2>Enter Room Id:</h2>
-            <input type="textbox" name="roomName" id="roomName">
-            <br>
-            <input type="submit" value="Submit" id="submit">
-      </div>
-    </section>
-    <section>
-      <div class="container"> 
-        <h1>Hello, world!</h1>
+        <div class="row">
+        <h2 class="col-md-12">Whats next on your playlist?</h2>
+        </div>
+        <div class="row form-inline before-element">
+            <input class="col-md-4" type="textbox" name="roomName" id="roomName">
+            <div class="col-md-1"></div>
+            <input class="col-md-2 button" type="submit" value="Submit" id="submit">
+          </div>
+        <div class="element"></div>
       </div>
     </section>
 
     <script>
       $( "#submit" ).click(function() {
-        alert('sup');
-        $.getJSON('http://skipr.me/room/DISTURBED%20KANGAROO', function(json_data){
-          alert(JSON.stringify(json_data));
-          })
+        pollResults();
+      });
+
+      function pollResults() {
+        var roomId;
+        var tracks;
+        var inputValue = $("input").val().trim().replace(' ', '%20').toUpperCase();
+        var getId = $.ajax({
+          type: "GET",
+          url: "http://skipr.me/room/"+inputValue,
+          cache: false,
+          success: function(data){
+            roomId = data;
+          }
+        })
         .fail(function(d){
-          alert('fail ' + d.toString())
+          console.log(d);
+        });
+        $.when(getId).then(function(result){        
+        $.ajax({
+          type: "GET",
+          url: "http://skipr.me/room/"+roomId+"/tracks/sorted",
+          cache: false,
+          success: function(data){
+            console.log(data);
+            tracks = data['tracks'];
+            var newHTML = [];
+
+              for (var i = 0; i < 5; i++) {
+                  newHTML.push('<div class="row">'+ '<h3 class="col-md-2">' + (i+1) + '.</h3>' +'<img src="' + tracks[i].image + '" style="height:200px;width=200px;"></img><span>' + tracks[i].name + '</span></div>');
+              }
+              $(".element").html(newHTML.join(""));
+          }
+        })
+        .fail(function(d){
           console.log(d);
         });
       });
+        t=setTimeout("pollResults()",3000);
+      }
+
     </script>
 
     <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>-->
