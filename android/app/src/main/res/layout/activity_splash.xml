@@ -27,6 +27,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:imeOptions="actionDone"
+            android:maxLines="1"
             android:hint="@string/room_name_hint"/>
 
         <LinearLayout
