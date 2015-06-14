@@ -20,6 +20,10 @@
     .before-element{
       padding-bottom: 10px;
     }
+
+    .row{
+      padding-bottom: 10px;
+    }
     </style>
   </head>
   <body>
@@ -51,10 +55,15 @@
 
 
         <div class="row">
-          <h2 class="col-md-12">What's next on your playlist?</h2>
+          <div class="center">
+            <div class="col-md-12">
+            <h2 style="text-align:center;">What's next on your playlist?</h2>
+            </div>
+          </div>
         </div>
 
         <div class="row">
+          <div class="col-lg-3"></div>
           <div class="col-lg-6">
             <div class="input-group">
               <input type="text" class="form-control" placeholder="Search for..." id="roomName">
@@ -71,14 +80,15 @@
     </section>
 
     <script>
+      var inputValue
       $( "#submit" ).click(function() {
+        inputValue = $("input").val().trim().replace(' ', '%20').toUpperCase();
         pollResults();
       });
 
       function pollResults() {
         var roomId;
         var tracks;
-        var inputValue = $("input").val().trim().replace(' ', '%20').toUpperCase();
         var getId = $.ajax({
           type: "GET",
           url: "http://skipr.me/room/"+inputValue,
@@ -101,7 +111,7 @@
             var newHTML = [];
 
               for (var i = 0; i < 5; i++) {
-                  newHTML.push('<div class="row">'+ '<h3 class="col-md-2">' + (i+1) + '.</h3>' +'<img src="' + tracks[i].image + '" style="height:200px;width=200px;"></img><span>' + tracks[i].name + '</span></div>');
+                  newHTML.push('<div class="row">'+ '<div class="col-md-3"></div><div class="col-md-1"><h3>' + (i+1) + '.</h3></div>' +'<div class="col-md-3"><img src="' + tracks[i].image + '" style="height:200px;width=200px;"></img></div><div class="col-md-2">' + tracks[i].name + '<div class="row"><div class="col-md-2">' + tracks[i].artist + '</div></div></div><div class="col-md-3"></div></div>');
               }
               $(".element").html(newHTML.join(""));
           }
