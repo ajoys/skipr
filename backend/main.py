@@ -1,4 +1,5 @@
 from flask import Flask, request, send_from_directory, jsonify
+from getSessionName import getRoomName
 import os
 import json
 import time
@@ -20,15 +21,17 @@ def hello():
 
 @app.route('/room', methods=['POST'])
 def createRoom():
-
+    roomName = getRoomName()
     # Persist room in db
     resp = app.db.post(params={
-        'createdAt' : int(time.time() * 1000)
+        'createdAt' : int(time.time() * 1000),
+        'name':roomName
         })
 
     roomId = resp.json()['id']
 
-    return jsonify(id=roomId)
+
+    return jsonify(id=roomId, name=roomName)
 
 
 def setupDB(services):
