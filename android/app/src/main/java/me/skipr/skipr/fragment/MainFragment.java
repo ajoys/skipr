@@ -1,12 +1,17 @@
 package me.skipr.skipr.fragment;
 
 import android.app.Fragment;
+import android.app.Instrumentation;
+import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -29,6 +34,7 @@ import me.skipr.skipr.api.SkiprApi;
 import me.skipr.skipr.api.Track;
 import me.skipr.skipr.api.VotedTrack;
 import me.skipr.skipr.model.SongCard;
+import me.skipr.skipr.util.UserUtil;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -84,6 +90,7 @@ public class MainFragment extends Fragment{
                 if (mCardAdapter.getCount() > 0) {
                     SongCard cardModel = (SongCard) mCardAdapter.pop();
                     reportLike(cardModel.getUniqueId());
+                    mCardAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -93,6 +100,7 @@ public class MainFragment extends Fragment{
                 if (mCardAdapter.getCount() > 0) {
                     SongCard cardModel = (SongCard) mCardAdapter.pop();
                     reportDislike(cardModel.getUniqueId());
+                    mCardAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -149,13 +157,22 @@ public class MainFragment extends Fragment{
     private void sendListIfNeeded(){
         if(mNumSongs == mVotedTracks.size()){
             JSONObject jsonObject = new JSONObject();
+            JSONObject jsonObjectTracks = new JSONObject();
 
             for(VotedTrack track : mVotedTracks){
                 try {
-                    jsonObject.put(track.id, track.weight);
+                    jsonObjectTracks.put(track.id, track.weight);
                 } catch (JSONException e) {
                 }
             }
+
+            try {
+                jsonObject.put("userId", UserUtil.getUserId());
+                jsonObject.put("tracks", jsonObjectTracks);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
 
             skiprApi.postVotedTracks(mRoomId, jsonObject, new Callback<String>() {
                 @Override
@@ -174,7 +191,7 @@ public class MainFragment extends Fragment{
     private int mNumSongs = 0;
     private void requestSongs(){
         final String roomId = mRoomId;
-        skiprApi.tracks(roomId, new Callback<List<Track>>() {
+        skiprApi.tracks(roomId, UserUtil.getUserId(), new Callback<List<Track>>() {
             @Override
             public void success(List<Track> tracks, Response response) {
                 mNumSongs = tracks.size();
