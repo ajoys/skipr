@@ -68,7 +68,7 @@ def joinRoomByName():
     # design doc
     doc = app.db.design('query')
     # creating index to search database
-    index = doc.search('s')
+    index = doc.search('searchRoom')
     # search database for room name
     doc = index.get(params={'query':'name:'+roomName})
 
