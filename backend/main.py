@@ -147,7 +147,7 @@ def getHighestVotedTracks(roomId=None):
         return jsonify(room), 404
 
 
-@app.route('/room/<roomId>/next', methods=['POST'])
+@app.route('/room/<roomId>/next', methods=['GET'])
 def getHighestVotedTrack(roomId=None):
     room = app.db.document(roomId).get().json()
     if 'tracks' in room:
@@ -155,26 +155,37 @@ def getHighestVotedTrack(roomId=None):
         if len(room['tracks']) == 0:
             return jsonify({'error':'Empty playlist'}), 400
 
-        highestVotes = 0
-        highestVotesIndex = 0
-        i = -1
-        for track in room['tracks']:
-            i += 1
-            if track['votes'] > highestVotes:
-                highestVotesIndex = i
-                highestVotes = track['votes']
+        room['tracks'].sort(key=lambda x: x['votes'], reverse=True)
 
-        topTrack = room['tracks'].pop(highestVotesIndex)
+        # Read the top track
+        topTrack = room['tracks'][0]
+        return jsonify({'topTrack':topTrack})
 
-        resp = app.db.document(roomId).merge({'tracks': room['tracks']})
-
-        if resp.status_code == 201:
-            return jsonify({'topTrack':topTrack})
-        else:
-            return jsonify(resp.json()), resp.status_code
     else:
         return jsonify(room), 404
 
+@app.route('/room/<roomId>/tracks/<trackId>', methods=['DELETE'])
+def deleteTrack(roomId=None, trackId=None):
+    room = app.db.document(roomId).get().json()
+    if 'tracks' in room:
+
+        # Find the track index
+        index = next((i for i, track in enumerate(room['tracks']) if track['id'] == trackId), -1)
+
+        if index == -1:
+            return jsonify({'warning':'Track not found'}), 200
+
+        # Remove the specified track
+        room['tracks'].pop(index)
+        resp = app.db.document(roomId).merge({'tracks': room['tracks']})
+        
+        if resp.status_code == 201:
+            return jsonify(resp.json())
+        else:
+            return jsonify(resp.json()), resp.status_code
+
+    else:
+        return jsonify(room), 404
 
 @app.route('/room/<roomId>/vote', methods=['PUT'])
 def voteForTracks(roomId=None):
