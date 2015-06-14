@@ -1,5 +1,9 @@
 package me.skipr.skipr.api;
 
+import org.json.JSONObject;
+
+import java.util.List;
+
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
@@ -28,5 +32,9 @@ public interface SkiprApi {
 
      /*Get all tracks to vote on*/
     @GET("/room/{roomId}/tracks")
-    public void create(@Path("roomId") int roomId, Callback<RoomCreateResponse> callback);
+    public void tracks(@Path("roomId") String roomId, Callback<List<Track>> callback);
+
+    /*Send voted tracks*/
+    @POST("/room/{roomId}/vote")
+    public void postVotedTracks(@Path("roomId") String roomId, @Body JSONObject body, Callback<String> callback);
 }
