@@ -47,14 +47,25 @@
 
     <section>
       <div class="container">
+
+
+
         <div class="row">
-        <h2 class="col-md-12">Whats next on your playlist?</h2>
+          <h2 class="col-md-12">What's next on your playlist?</h2>
         </div>
-        <div class="row form-inline before-element">
-            <input class="col-md-4" type="textbox" name="roomName" id="roomName">
-            <div class="col-md-1"></div>
-            <input class="col-md-2 button" type="submit" value="Submit" id="submit">
+
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Search for..." id="roomName">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button" id="submit">Go!</button>
+              </span>
+            </div>
           </div>
+        </div>
+
+        <!-- Songs are loaded here -->
         <div class="element"></div>
       </div>
     </section>
