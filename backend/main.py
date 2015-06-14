@@ -21,7 +21,7 @@ def hello():
     return 'Hello World! (Skipr Test)'
 
 
-@app.route('/room', methods=['POST'])
+@app.route('/room', methods=['POST', 'PUT'])
 def createRoom():
 
     userId = request.form['userId']
@@ -45,6 +45,54 @@ def createRoom():
     roomId = resp.json()['id']
 
     return jsonify(id=roomId, name=roomName)
+
+@app.route('/room/<roomId>/join', methods=['PUT'])
+def joinRoomById(roomId=None):
+
+    userId = request.form['userId']
+    response = addUserToRoom(roomId, userId)
+    return response
+
+@app.route('/join', methods=['PUT'])
+def joinRoomByName():
+
+    # params to join room with pretty name
+    userId = request.form['userId']
+    roomName = request.form['roomName'].upper()
+
+    # design doc
+    doc = app.db.design('query')
+    # creating index to search database
+    index = doc.search('searchRoom')
+    # search database for room name
+    doc = index.get(params={'query':'name:'+roomName})
+
+    # check to see if valid room is passed
+    if len(doc.json()['rows']) == 0:
+        return jsonify({'error':'ERROR: ROOM NOT FOUND'}),404
+    else:
+        return addUserToRoom(doc.json()['rows'][0]['id'], userId)
+    
+def addUserToRoom(roomId, userId):
+
+    listOfUsers = app.db.document(roomId).get().json()
+    listOfUsers = listOfUsers['users']
+   
+
+    listOfUsers.append(userId)
+
+    # insert user into database
+    resp = app.db.document(roomId).merge({'users':listOfUsers})
+    return jsonify(resp.json())
+
+
+@app.route('/room/<roomId>/tracks', methods=['GET'])
+def getTracksForRoom(roomId=None):
+    room = app.db.document(roomId).get().json()
+    if 'tracks' in room:
+        return jsonify({'tracks':room['tracks']})
+    else:
+        return jsonify(room), 404
 
 
 def setupDB(services):

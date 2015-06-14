@@ -20,5 +20,5 @@ def getRandomWord(file):
     totalWords = len(listOfWords)
 
     # generate a random number and return a random word
-    randomNumber = random.randint(0, totalWords)
+    randomNumber = random.randint(0, totalWords - 1)
     return listOfWords[randomNumber]
