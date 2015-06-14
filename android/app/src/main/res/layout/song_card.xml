@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/global_container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="12dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        tools:src="@drawable/picture1"/>
+
+    <LinearLayout
+        android:layout_below="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#80FFFFFF"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/title"
+            android:textColor="@android:color/primary_text_light"
+            android:textSize="20sp"
+            android:layout_weight="1"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:background="#00FFFFFF"
+            tools:text="Title"
+            android:padding="10dp"/>
+
+        <TextView
+            android:id="@+id/description"
+            style="@android:style/TextAppearance.Inverse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:fontFamily="sans-serif-condensed"
+            android:background="#00FFFFFF"
+            android:ellipsize="end"
+            android:padding="10dp"
+            android:lines="1"
+            android:textColor="@android:color/secondary_text_light"
+            tools:text="description text"/>
+
+    </LinearLayout>
+
+
+
+
+
+
+
+
+</RelativeLayout>
+    <!-- From: file:/Users/enriquelopezmanas/AndroidStudioProjects/Swipeable-Cards/AndTinder/src/main/res/layout/std_card_inner.xml -->

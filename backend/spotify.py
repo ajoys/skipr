@@ -40,6 +40,7 @@ class Spotify:
                     'album': playlistItem['track']['album']['name'],
                     'image': playlistItem['track']['album']['images'][0]['url'],
                     'artist': playlistItem['track']['artists'][0]['name'],
+                    'artist_id': playlistItem['track']['artists'][0]['id'],
                     'popularity': playlistItem['track']['popularity'],
                     'id': playlistItem['track']['id'],
                     'votes': 0
