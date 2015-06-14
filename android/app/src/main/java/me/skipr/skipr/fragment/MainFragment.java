@@ -154,7 +154,7 @@ public class MainFragment extends BasePlayerActivity{
     }
 
     private void sendListIfNeeded(){
-        if(mNumSongs == mVotedTracks.size()){
+        if(mNumSongs == mVotedTracks.size() || mVotedTracks.size() > 9){
             JSONObject jsonObject = new JSONObject();
             JSONObject jsonObjectTracks = new JSONObject();
 
@@ -173,9 +173,9 @@ public class MainFragment extends BasePlayerActivity{
             }
 
 
-            skiprApi.postVotedTracks(mRoomId, jsonObject, new Callback<String>() {
+            skiprApi.postVotedTracks(mRoomId, jsonObject, new Callback<Response>() {
                 @Override
-                public void success(String s, Response response) {
+                public void success(Response s, Response response) {
                     return;
                 }
 
