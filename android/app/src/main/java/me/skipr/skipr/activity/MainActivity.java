@@ -16,7 +16,9 @@ public class MainActivity extends BaseActionBarActivity {
         if (savedInstanceState == null) {
             String roomId = getIntent().getExtras().getString("room_id", "");
             String roomName = getIntent().getExtras().getString("room_name", "");
-            MainFragment mainFragment = MainFragment.newInstance(roomId, roomName) ;
+            String token = getIntent().getExtras().getString("token", "");
+            Boolean isPlayer = getIntent().getExtras().getBoolean("isPlayer", false);
+            MainFragment mainFragment = MainFragment.newInstance(roomId, roomName, token, isPlayer) ;
             getFragmentManager().beginTransaction()
                     .add(R.id.container, mainFragment)
                     .commit();

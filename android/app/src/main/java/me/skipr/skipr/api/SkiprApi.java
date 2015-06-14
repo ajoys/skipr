@@ -7,6 +7,7 @@ import java.util.List;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.Multipart;
 import retrofit.http.POST;
@@ -37,4 +38,12 @@ public interface SkiprApi {
     /*Send voted tracks*/
     @POST("/room/{roomId}/vote")
     public void postVotedTracks(@Path("roomId") String roomId, @Body JSONObject body, Callback<String> callback);
+
+    /*get which task should be played*/
+    @GET("/room/{roomId}/next")
+    public void getFreshestTrack(@Path("roomId") String roomId, Callback<TopTrack> callback);
+
+    /*get which task should be played*/
+    @DELETE("/room/{roomId}/tracks/{trackId}")
+    public void deleteTrack(@Path("roomId") String roomId, @Path("trackId") String trackId, Callback<Response> callback);
 }

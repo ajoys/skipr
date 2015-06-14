@@ -44,14 +44,12 @@ import retrofit.client.Response;
 /**
  * Created by Navjot on 6/13/2015.
  */
-public class MainFragment extends Fragment{
+public class MainFragment extends BasePlayerActivity{
 
-    private String mRoomId;
-    private String mRoomName;
+
     private CardContainer mCardContainer;
     private TextView mRoomNameTextview;
     private StackAdapter mCardAdapter;
-    private SkiprApi skiprApi;
     private Drawable defaultDrawable;
     private List<VotedTrack> mVotedTracks = new ArrayList<VotedTrack>();
 
@@ -60,6 +58,12 @@ public class MainFragment extends Fragment{
         super.onCreateView(inflater, container, savedInstanceState);
         mRoomId = getArguments().getString("room_id", "");
         mRoomName = getArguments().getString("room_name", "");
+
+        Boolean isPlayer = getArguments().getBoolean("isPlayer", false);
+        String token = getArguments().getString("token", "");
+        if(isPlayer && !TextUtils.isEmpty(token)){
+            startPlaying(token);
+        }
 
         // at this point, the user should have selected a group to join
         if(TextUtils.isEmpty(mRoomId) || TextUtils.isEmpty(mRoomName)){
@@ -74,13 +78,6 @@ public class MainFragment extends Fragment{
 
         mRoomNameTextview = (TextView) rootView.findViewById(R.id.room_name);
         mRoomNameTextview.setText(mRoomName);
-
-        RestAdapter restAdapter;
-        restAdapter = new RestAdapter.Builder()
-                .setEndpoint(Constants.URL)  //call your base url
-                .setLogLevel(RestAdapter.LogLevel.FULL).setLog(new AndroidLog("YOUR_LOG_TAG"))
-                .build();
-        skiprApi = restAdapter.create(SkiprApi.class);
 
         defaultDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.picture1, null);
 
@@ -109,11 +106,13 @@ public class MainFragment extends Fragment{
         return rootView;
     }
 
-    public static MainFragment newInstance(String roomId, String roomName){
+    public static MainFragment newInstance(String roomId, String roomName, String token, Boolean isPlayer){
         MainFragment fragment = new MainFragment();
         Bundle args = new Bundle();
         args.putString("room_id", roomId);
         args.putString("room_name", roomName);
+        args.putString("token", token);
+        args.putBoolean("isPlayer", isPlayer);
         Log.d("Skipr", roomId);
         fragment.setArguments(args);
         return fragment;
