@@ -93,7 +93,8 @@ def addUserToRoom(roomId, userId):
 def getTracksForRoom(roomId=None):
     room = app.db.document(roomId).get().json()
     if 'tracks' in room:
-        return jsonify({'tracks':room['tracks']})
+        return json.dumps(room['tracks']) # Dirty hack
+        #return jsonify({'tracks':room['tracks']})
     else:
         return jsonify(room), 404
 
