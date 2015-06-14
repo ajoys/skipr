@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="me.skipr.skipr" >
     <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_icon"
+        tools:replace="android:icon,android:theme"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
@@ -20,11 +22,17 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
+            <data
+                android:host="callback"
+                android:scheme="skipr"/>
         </activity>
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name" >
         </activity>
+        <activity
+            android:name="com.spotify.sdk.android.authentication.LoginActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <meta-data android:name="io.branch.sdk.BranchKey" android:value="@string/bnc_app_key" />
     </application>
 
