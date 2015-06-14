@@ -98,6 +98,22 @@ def getTracksForRoom(roomId=None):
     else:
         return jsonify(room), 404
 
+
+@app.route('/room/<roomId>/tracks/sorted', methods=['GET'])
+def getHighestVotedTracks(roomId=None):
+    room = app.db.document(roomId).get().json()
+    if 'tracks' in room:
+
+        if len(room['tracks']) == 0:
+            return jsonify({'error':'Empty playlist'}), 400
+
+        room['tracks'].sort(key=lambda x: x['votes'], reverse=True)
+
+        return jsonify({'tracks':room['tracks']})
+    else:
+        return jsonify(room), 404
+
+
 @app.route('/room/<roomId>/next', methods=['POST'])
 def getHighestVotedTrack(roomId=None):
     room = app.db.document(roomId).get().json()
@@ -125,7 +141,6 @@ def getHighestVotedTrack(roomId=None):
             return jsonify(resp.json()), resp.status_code
     else:
         return jsonify(room), 404
-
 
 
 def setupDB(services):
