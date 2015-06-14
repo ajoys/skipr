@@ -32,7 +32,7 @@ public interface SkiprApi {
 
      /*Get all tracks to vote on*/
     @GET("/room/{roomId}/tracks")
-    public void tracks(@Path("roomId") String roomId, Callback<List<Track>> callback);
+    public void tracks(@Path("roomId") String roomId, @Query("userId") String userId, Callback<List<Track>> callback);
 
     /*Send voted tracks*/
     @POST("/room/{roomId}/vote")
