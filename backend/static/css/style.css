@@ -1,0 +1,13 @@
+section {
+  width: 100%;
+  padding: 0 7%;
+  display: table;
+  margin: 0;
+  max-width: none;
+  background-color: #373B44;
+  height: 100vh;
+  
+  &:nth-of-type(2n) {
+    background-color: #FE4B74;
+  }
+}
