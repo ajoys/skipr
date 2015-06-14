@@ -36,8 +36,8 @@ public interface SkiprApi {
     public void tracks(@Path("roomId") String roomId, @Query("userId") String userId, Callback<List<Track>> callback);
 
     /*Send voted tracks*/
-    @POST("/room/{roomId}/vote")
-    public void postVotedTracks(@Path("roomId") String roomId, @Body JSONObject body, Callback<String> callback);
+    @PUT("/room/{roomId}/vote")
+    public void postVotedTracks(@Path("roomId") String roomId, @Body JSONObject body, Callback<Response> callback);
 
     /*get which task should be played*/
     @GET("/room/{roomId}/next")

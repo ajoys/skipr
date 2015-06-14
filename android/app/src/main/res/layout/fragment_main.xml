@@ -19,8 +19,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="18sp"
+        android:layout_marginBottom="18dp"
         android:gravity="center"
-        android:layout_above="@+id/vote_bar"
+        android:layout_alignParentBottom="true"
         />
 
     <LinearLayout
@@ -29,6 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:visibility="gone"
         android:paddingTop="24dp"
         android:paddingBottom="24dp">
 
