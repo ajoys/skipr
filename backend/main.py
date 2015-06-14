@@ -30,21 +30,24 @@ def createRoom():
     roomName = getRoomName()
 
     sp = Spotify(secrets.CLIENT_ID, secrets.CLIENT_SECRET, token)
-    tracks = sp.getPlaylistTracks('spotify', sp.PLAYLIST_ID_TOP_50)
+    tracks, error = sp.getPlaylistTracks('spotify', sp.PLAYLIST_ID_TOP_50)
     
-    # Persist room in db
-    resp = app.db.post(params={
-        'createdAt' : int(time.time() * 1000),
-        'name':roomName,
-        'owner':userId,
-        'token':token,
-        'users':[userId],
-        'tracks':tracks
-        })
+    if error == None:
+        # Persist room in db
+        resp = app.db.post(params={
+            'createdAt' : int(time.time() * 1000),
+            'name':roomName,
+            'owner':userId,
+            'token':token,
+            'users':[userId],
+            'tracks':tracks
+            })
 
-    roomId = resp.json()['id']
+        roomId = resp.json()['id']
+        return jsonify(id=roomId, name=roomName)
+    else:
+        return jsonify(error), error.get('status', 500)
 
-    return jsonify(id=roomId, name=roomName)
 
 @app.route('/room/<roomId>/join', methods=['PUT'])
 def joinRoomById(roomId=None):
@@ -63,7 +66,7 @@ def joinRoomByName():
     # design doc
     doc = app.db.design('query')
     # creating index to search database
-    index = doc.search('searchRoom')
+    index = doc.search('s')
     # search database for room name
     doc = index.get(params={'query':'name:'+roomName})
 
@@ -90,7 +93,52 @@ def addUserToRoom(roomId, userId):
 def getTracksForRoom(roomId=None):
     room = app.db.document(roomId).get().json()
     if 'tracks' in room:
+        return json.dumps(room['tracks']) # Dirty hack
+        #return jsonify({'tracks':room['tracks']})
+    else:
+        return jsonify(room), 404
+
+
+@app.route('/room/<roomId>/tracks/sorted', methods=['GET'])
+def getHighestVotedTracks(roomId=None):
+    room = app.db.document(roomId).get().json()
+    if 'tracks' in room:
+
+        if len(room['tracks']) == 0:
+            return jsonify({'error':'Empty playlist'}), 400
+
+        room['tracks'].sort(key=lambda x: x['votes'], reverse=True)
+
         return jsonify({'tracks':room['tracks']})
+    else:
+        return jsonify(room), 404
+
+
+@app.route('/room/<roomId>/next', methods=['POST'])
+def getHighestVotedTrack(roomId=None):
+    room = app.db.document(roomId).get().json()
+    if 'tracks' in room:
+
+        if len(room['tracks']) == 0:
+            return jsonify({'error':'Empty playlist'}), 400
+
+        highestVotes = 0
+        highestVotesIndex = 0
+        i = -1
+        for track in room['tracks']:
+            i += 1
+            if track['votes'] > highestVotes:
+                highestVotesIndex = i
+                highestVotes = track['votes']
+
+        topTrack = room['tracks'].pop(highestVotesIndex)
+
+        resp = app.db.document(roomId).merge({'tracks': room['tracks']})
+
+        if resp.status_code == 201:
+            return jsonify({'topTrack':topTrack})
+        else:
+            return jsonify(resp.json()), resp.status_code
     else:
         return jsonify(room), 404
 

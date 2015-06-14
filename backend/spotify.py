@@ -22,13 +22,31 @@ class Spotify:
         Get a list of tracks from the specified playlist
         '''
         url = 'https://api.spotify.com/v1/users/{0}/playlists/{1}'.format(userId, playlistId)
-        resp = requests.get(url, headers=self.headers).json()
-        
-        tracks = []
-        for playlistItem in resp['tracks']['items']:
-            # Remove data we don't need
-            playlistItem['track'].pop('available_markets', None)
-            playlistItem['track']['album'].pop('available_markets', None)
-            tracks.append(playlistItem['track'])
+        resp = requests.get(url, headers=self.headers)
 
-        return tracks
+        if resp.status_code == 200:
+
+            resp = resp.json()
+
+            # Remove any intro track if it exists
+            if 'Intro' in resp['tracks']['items'][0]['track']['name']:
+                resp['tracks']['items'].pop(0)
+
+            # Only extract necessary information
+            tracks = []
+            for playlistItem in resp['tracks']['items']:
+                tracks.append({
+                    'name': playlistItem['track']['name'],
+                    'album': playlistItem['track']['album']['name'],
+                    'image': playlistItem['track']['album']['images'][0]['url'],
+                    'artist': playlistItem['track']['artists'][0]['name'],
+                    'artist_id': playlistItem['track']['artists'][0]['id'],
+                    'popularity': playlistItem['track']['popularity'],
+                    'id': playlistItem['track']['id'],
+                    'votes': 0
+                })
+
+            return tracks, None
+        
+        else:
+            return [], resp.json()['error']
