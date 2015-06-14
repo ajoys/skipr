@@ -1,5 +1,7 @@
 package me.skipr.skipr.api;
 
+import java.util.List;
+
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
@@ -28,5 +30,5 @@ public interface SkiprApi {
 
      /*Get all tracks to vote on*/
     @GET("/room/{roomId}/tracks")
-    public void create(@Path("roomId") int roomId, Callback<RoomCreateResponse> callback);
+    public void tracks(@Path("roomId") String roomId, Callback<List<Track>> callback);
 }

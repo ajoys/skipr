@@ -9,6 +9,7 @@ import com.andtinder.model.CardModel;
  */
 public class SongCard extends CardModel {
     private String mUniqueId;
+    private String mImageUrl;
     public void setUniqueId(String uniqueId){
         mUniqueId = uniqueId;
     }
@@ -16,9 +17,11 @@ public class SongCard extends CardModel {
     public String getUniqueId(){
         return mUniqueId;
     }
+    public String getmImageUrl(){return mImageUrl;}
 
-    public SongCard(String uniqueId, String title, String desc, Drawable image){
+    public SongCard(String uniqueId, String title, String desc, Drawable image, String imageUrl){
         super(title, desc, image);
+        mImageUrl = imageUrl;
         setUniqueId(uniqueId);
     }
 }
