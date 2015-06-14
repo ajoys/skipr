@@ -85,6 +85,16 @@ def addUserToRoom(roomId, userId):
     resp = app.db.document(roomId).merge({'users':listOfUsers})
     return jsonify(resp.json())
 
+
+@app.route('/room/<roomId>/tracks', methods=['GET'])
+def getTracksForRoom(roomId=None):
+    room = app.db.document(roomId).get().json()
+    if 'tracks' in room:
+        return jsonify({'tracks':room['tracks']})
+    else:
+        return jsonify(room), 404
+
+
 def setupDB(services):
     '''
     Setup a cloudant DB object
