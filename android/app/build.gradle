@@ -32,5 +32,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.github.kikoso:SwipeableCards:1.1-RELEASE@aar'
+    compile 'com.squareup.picasso:picasso:2.5.2'
     compile name: 'branch-1.5.7'
 }

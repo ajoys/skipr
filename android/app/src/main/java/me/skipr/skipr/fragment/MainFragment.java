@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.andtinder.model.CardModel;
@@ -28,6 +29,7 @@ public class MainFragment extends Fragment{
     private String mRoomId;
     private String mRoomName;
     private CardContainer mCardContainer;
+    private TextView mRoomNameTextview;
     private SimpleCardStackAdapter mCardAdapter;
 
     @Override
@@ -50,6 +52,11 @@ public class MainFragment extends Fragment{
         addSongToQueue("2", "Title2", "Description goes here", "");
         addSongToQueue("3", "Title3", "Description goes here", "");
         mCardContainer.setAdapter(mCardAdapter);
+
+        mRoomNameTextview = (TextView) rootView.findViewById(R.id.room_name);
+        mRoomNameTextview.setText(mRoomName);
+
+
         return rootView;
     }
 
@@ -87,6 +94,10 @@ public class MainFragment extends Fragment{
     }
 
     private void reportLike(String uniqueId){
+        //network call
+    }
+
+    private void requestSongs(){
         //network call
     }
 }
