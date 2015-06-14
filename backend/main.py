@@ -21,15 +21,21 @@ def hello():
 
 @app.route('/room', methods=['POST'])
 def createRoom():
+
+    userId = request.form['userId']
+    token = request.form['token']
+
     roomName = getRoomName()
+
     # Persist room in db
     resp = app.db.post(params={
         'createdAt' : int(time.time() * 1000),
-        'name':roomName
+        'name':roomName,
+        'owner':userId,
+        'token':token
         })
 
     roomId = resp.json()['id']
-
 
     return jsonify(id=roomId, name=roomName)
 
