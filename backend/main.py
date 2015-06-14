@@ -30,15 +30,16 @@ def createRoom():
     roomName = getRoomName()
 
     sp = Spotify(secrets.CLIENT_ID, secrets.CLIENT_SECRET, token)
-    #return sp.getPlaylist('spotify', sp.PLAYLIST_ID_TOP_50)
-
+    tracks = sp.getPlaylistTracks('spotify', sp.PLAYLIST_ID_TOP_50)
+    
     # Persist room in db
     resp = app.db.post(params={
         'createdAt' : int(time.time() * 1000),
         'name':roomName,
         'owner':userId,
         'token':token,
-        'users':[userId]
+        'users':[userId],
+        'tracks':tracks
         })
 
     roomId = resp.json()['id']
