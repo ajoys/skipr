@@ -126,7 +126,7 @@ def getHighestVotedTracks(roomId=None):
         return jsonify(room), 404
 
 
-@app.route('/room/<roomId>/next', methods=['POST'])
+@app.route('/room/<roomId>/next', methods=['GET', 'POST'])
 def getHighestVotedTrack(roomId=None):
     room = app.db.document(roomId).get().json()
     if 'tracks' in room:
@@ -134,23 +134,27 @@ def getHighestVotedTrack(roomId=None):
         if len(room['tracks']) == 0:
             return jsonify({'error':'Empty playlist'}), 400
 
-        highestVotes = 0
-        highestVotesIndex = 0
-        i = -1
-        for track in room['tracks']:
-            i += 1
-            if track['votes'] > highestVotes:
-                highestVotesIndex = i
-                highestVotes = track['votes']
+        room['tracks'].sort(key=lambda x: x['votes'], reverse=True)
 
-        topTrack = room['tracks'].pop(highestVotesIndex)
-
-        resp = app.db.document(roomId).merge({'tracks': room['tracks']})
-
-        if resp.status_code == 201:
+        if request.method == 'GET':
+            # Read the top track
+            topTrack = room['tracks'][0]
             return jsonify({'topTrack':topTrack})
-        else:
-            return jsonify(resp.json()), resp.status_code
+
+        elif request.method == 'POST':
+            # Remove the top track, get the next one
+            room['tracks'].pop(0)
+            if len(room['tracks']) == 0: return jsonify({'error':'Playlist empty'}), 400
+            
+            topTrack = room['tracks'][0]
+
+            resp = app.db.document(roomId).merge({'tracks': room['tracks']})
+            if resp.status_code == 201:
+                return jsonify({'topTrack':topTrack})
+            else:
+                return jsonify(resp.json()), resp.status_code
+
+
     else:
         return jsonify(room), 404
 
