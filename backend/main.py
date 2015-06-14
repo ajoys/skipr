@@ -1,4 +1,5 @@
 from flask import Flask, request, send_from_directory, jsonify
+from flaskutils import crossdomain
 from getSessionName import getRoomName
 import spotify
 from spotify import Spotify
@@ -57,6 +58,7 @@ def joinRoomById(roomId=None):
     return response
 
 @app.route('/join', methods=['PUT'])
+@crossdomain(origin='*')
 def joinRoomByName():
 
     # params to join room with pretty name
@@ -111,8 +113,17 @@ def addUserToRoom(roomId, userId):
 
 @app.route('/room/<roomId>/tracks', methods=['GET'])
 def getTracksForRoom(roomId=None):
+
+    # Get the optional userId parameter
+    userId = request.args.get('userId')
+
     room = app.db.document(roomId).get().json()
     if 'tracks' in room:
+
+        # Filter by voter if userId was provided
+        if userId != None:
+            room['tracks'] = [x for x in room['tracks'] if not userId in x['voters']]
+
         return json.dumps(room['tracks']) # Dirty hack
         #return jsonify({'tracks':room['tracks']})
     else:
@@ -120,6 +131,7 @@ def getTracksForRoom(roomId=None):
 
 
 @app.route('/room/<roomId>/tracks/sorted', methods=['GET'])
+@crossdomain(origin='*')
 def getHighestVotedTracks(roomId=None):
     room = app.db.document(roomId).get().json()
     if 'tracks' in room:
@@ -159,6 +171,40 @@ def getHighestVotedTrack(roomId=None):
             return jsonify({'topTrack':topTrack})
         else:
             return jsonify(resp.json()), resp.status_code
+    else:
+        return jsonify(room), 404
+
+
+@app.route('/room/<roomId>/vote', methods=['PUT'])
+def voteForTracks(roomId=None):
+
+    # Get parameters from raw json
+    if not request.json:
+        return jsonify({'error':'Missing parameters'}), 400
+
+    userId = request.json['nameValuePairs']['userId']
+    ratedTracks = request.json['nameValuePairs']['tracks']['nameValuePairs']
+
+
+    room = app.db.document(roomId).get().json()
+    if 'tracks' in room:
+
+        # Loop over playlist and vote for tracks
+        changed = 0
+        for track in room['tracks']:
+            if track['id'] in ratedTracks:
+                if userId not in track['voters']:
+                    track['votes'] += ratedTracks[track['id']]
+                    track['voters'].append(userId)
+                    changed += 1
+
+        # Save updated tracks
+        resp = app.db.document(roomId).merge({'tracks': room['tracks']})
+        data = resp.json()
+        data['votedFor'] = changed
+
+        return jsonify(data), resp.status_code
+
     else:
         return jsonify(room), 404
 

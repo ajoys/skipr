@@ -43,7 +43,8 @@ class Spotify:
                     'artist_id': playlistItem['track']['artists'][0]['id'],
                     'popularity': playlistItem['track']['popularity'],
                     'id': playlistItem['track']['id'],
-                    'votes': 0
+                    'votes': 0,
+                    'voters': []
                 })
 
             return tracks, None
