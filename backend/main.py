@@ -78,7 +78,8 @@ def joinRoomByName():
     else:
         return addUserToRoom(doc.json()['rows'][0]['id'], userId)
 
-@app.route('/room/<roomName>/', methods=['GET'])
+@app.route('/room/<roomName>', methods=['GET'])
+@crossdomain(origin='*')
 def getRoomIdFromName(roomName=None):
 
     # params to join room with pretty name
