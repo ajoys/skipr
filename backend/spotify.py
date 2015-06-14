@@ -41,7 +41,8 @@ class Spotify:
                     'image': playlistItem['track']['album']['images'][0]['url'],
                     'artist': playlistItem['track']['artists'][0]['name'],
                     'popularity': playlistItem['track']['popularity'],
-                    'id': playlistItem['track']['id']
+                    'id': playlistItem['track']['id'],
+                    'votes': 0
                 })
 
             return tracks, None
