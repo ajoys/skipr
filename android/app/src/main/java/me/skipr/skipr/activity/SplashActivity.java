@@ -24,6 +24,7 @@ import io.branch.referral.BranchError;
 import me.skipr.skipr.R;
 import me.skipr.skipr.api.Constants;
 import me.skipr.skipr.api.RoomCreateResponse;
+import me.skipr.skipr.api.RoomJoinResponse;
 import me.skipr.skipr.api.SkiprApi;
 import me.skipr.skipr.util.UserUtil;
 import retrofit.Callback;
@@ -91,7 +92,7 @@ public class SplashActivity extends Activity {
         mJoinEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_DONE){
+                if(event.getAction() == EditorInfo.IME_ACTION_DONE){
                     handleJoinButtonClick();
                     return true;
                 }
@@ -122,15 +123,17 @@ public class SplashActivity extends Activity {
 
     private void handleAutoJoinRoom(final String roomName) {
         showConnecting();
-        attemptToJoinRoom(roomName, new Callback<String>() {
+        attemptToJoinRoom(roomName, new Callback<RoomJoinResponse>() {
             @Override
-            public void success(String roomId, Response response) {
+            public void success(RoomJoinResponse roomJoinResponse, Response response) {
+
                 hideConnecting();
-                launchMain(roomId, roomName);
+                launchMain(roomJoinResponse.id, roomName);
             }
 
             @Override
             public void failure(RetrofitError error) {
+
                 //stop the auto join, and enable the UI so the user can join a room themselves
                 hideConnecting();
             }
@@ -151,15 +154,17 @@ public class SplashActivity extends Activity {
             return;
         }
         showConnecting();
-        attemptToJoinRoom(roomName, new Callback<String>() {
+        attemptToJoinRoom(roomName, new Callback<RoomJoinResponse>() {
             @Override
-            public void success(String roomId, Response response) {
+            public void success(RoomJoinResponse roomJoinResponse, Response response) {
+
                 hideConnecting();
-                launchMain(roomId, roomName);
+                launchMain(roomJoinResponse.id, roomName);
             }
 
             @Override
             public void failure(RetrofitError error) {
+
                 hideConnecting();
                 mJoinEditText.setError("Unable to join room");
             }
@@ -176,8 +181,8 @@ public class SplashActivity extends Activity {
         mProgressBar.setVisibility(View.GONE);
     }
 
-    private void attemptToJoinRoom(String roomId, Callback<String> onRoomJoin) {
-        skiprApi.join(UserUtil.getUserId(), roomId, onRoomJoin);
+    private void attemptToJoinRoom(String roomName, Callback<RoomJoinResponse> onRoomJoin) {
+        skiprApi.join(UserUtil.getUserId(), roomName, onRoomJoin);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {

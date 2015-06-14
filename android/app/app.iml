@@ -96,6 +96,7 @@
     <orderEntry type="library" exported="" name="spotify-player-1.0.0-beta10" level="project" />
     <orderEntry type="library" exported="" name="branch-1.5.7" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-22.2.0" level="project" />
+    <orderEntry type="library" exported="" name="picasso-2.5.2" level="project" />
     <orderEntry type="library" exported="" name="SwipeableCards-1.1-RELEASE" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="retrofit-1.9.0" level="project" />

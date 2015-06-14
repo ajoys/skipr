@@ -16,11 +16,17 @@ import retrofit.http.Query;
  */
 public interface SkiprApi {
     /*Join room*/
-    @PUT("/{roomId}/join")
-    public void join(@Path("roomId") String roomId, @Body String userId, Callback<String> callback);
+    @Multipart
+    @PUT("/join")
+    public void join(@Part("userId") String userId, @Part("roomName") String roomName, Callback<RoomJoinResponse> callback);
 
     /*Create room*/
     @Multipart
     @POST("/room")
     public void create(@Part("userId") String userId, @Part("token") String token, Callback<RoomCreateResponse> callback);
+
+
+     /*Get all tracks to vote on*/
+    @GET("/room/{roomId}/tracks")
+    public void create(@Path("roomId") int roomId, Callback<RoomCreateResponse> callback);
 }
