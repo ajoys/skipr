@@ -81,15 +81,19 @@ public class MainFragment extends Fragment{
         rootView.findViewById(R.id.like_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SongCard cardModel = (SongCard) mCardAdapter.pop();
-                reportLike(cardModel.getUniqueId());
+                if (mCardAdapter.getCount() > 0) {
+                    SongCard cardModel = (SongCard) mCardAdapter.pop();
+                    reportLike(cardModel.getUniqueId());
+                }
             }
         });
         rootView.findViewById(R.id.dislike_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SongCard cardModel = (SongCard) mCardAdapter.pop();
-                reportDislike(cardModel.getUniqueId());
+                if (mCardAdapter.getCount() > 0) {
+                    SongCard cardModel = (SongCard) mCardAdapter.pop();
+                    reportDislike(cardModel.getUniqueId());
+                }
             }
         });
 
