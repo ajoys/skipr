@@ -91,8 +91,17 @@ def addUserToRoom(roomId, userId):
 
 @app.route('/room/<roomId>/tracks', methods=['GET'])
 def getTracksForRoom(roomId=None):
+
+    # Get the optional userId parameter
+    userId = request.args.get('userId')
+
     room = app.db.document(roomId).get().json()
     if 'tracks' in room:
+
+        # Filter by voter if userId was provided
+        if userId != None:
+            room['tracks'] = [x for x in room['tracks'] if not userId in x['voters']]
+
         return json.dumps(room['tracks']) # Dirty hack
         #return jsonify({'tracks':room['tracks']})
     else:
