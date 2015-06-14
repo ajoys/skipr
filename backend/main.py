@@ -30,21 +30,24 @@ def createRoom():
     roomName = getRoomName()
 
     sp = Spotify(secrets.CLIENT_ID, secrets.CLIENT_SECRET, token)
-    tracks = sp.getPlaylistTracks('spotify', sp.PLAYLIST_ID_TOP_50)
+    tracks, error = sp.getPlaylistTracks('spotify', sp.PLAYLIST_ID_TOP_50)
     
-    # Persist room in db
-    resp = app.db.post(params={
-        'createdAt' : int(time.time() * 1000),
-        'name':roomName,
-        'owner':userId,
-        'token':token,
-        'users':[userId],
-        'tracks':tracks
-        })
+    if error == None:
+        # Persist room in db
+        resp = app.db.post(params={
+            'createdAt' : int(time.time() * 1000),
+            'name':roomName,
+            'owner':userId,
+            'token':token,
+            'users':[userId],
+            'tracks':tracks
+            })
 
-    roomId = resp.json()['id']
+        roomId = resp.json()['id']
+        return jsonify(id=roomId, name=roomName)
+    else:
+        return jsonify(error), error.get('status', 500)
 
-    return jsonify(id=roomId, name=roomName)
 
 @app.route('/room/<roomId>/join', methods=['PUT'])
 def joinRoomById(roomId=None):
