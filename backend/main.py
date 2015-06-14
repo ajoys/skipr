@@ -1,5 +1,7 @@
 from flask import Flask, request, send_from_directory, jsonify
 from getSessionName import getRoomName
+import spotify
+from spotify import Spotify
 import os
 import json
 import time
@@ -21,15 +23,26 @@ def hello():
 
 @app.route('/room', methods=['POST'])
 def createRoom():
+
+    userId = request.form['userId']
+    token = request.form['token']
+
     roomName = getRoomName()
+
+    sp = Spotify(secrets.CLIENT_ID, secrets.CLIENT_SECRET, token)
+    tracks = sp.getPlaylistTracks('spotify', sp.PLAYLIST_ID_TOP_50)
+    
     # Persist room in db
     resp = app.db.post(params={
         'createdAt' : int(time.time() * 1000),
-        'name':roomName
+        'name':roomName,
+        'owner':userId,
+        'token':token,
+        'users':[userId],
+        'tracks':tracks
         })
 
     roomId = resp.json()['id']
-
 
     return jsonify(id=roomId, name=roomName)
 

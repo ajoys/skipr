@@ -1,0 +1,56 @@
+ARCHITECTURE
+============
+- Android App
+- AWS/Bluemix
+- Python App
+
+UX
+==
+- User creates a session, and we give them a list of songs. 
+- User then swipes for yes/no of tracks
+- Each aditional user also will swipe
+- We get back a list of songs tagged yes/no
+- At the end of each song/after a vote, run algo to check what the next song should be
+- As new songs get added, user gets notified and they can make decisions.
+- Ability to leave session. 
+- Wishlist
+- Choose songs, save friendships
+- QR code for playlists/name for playlist
+- Branch for deep linking to Android (YAY HOODIE)
+
+Name Ideas
+==========
+- Skipr	
+
+API Endpoints
+=============
+session/[SessionId]/[SubObject]
+- Session Create (POST)
+	- Parameters: 
+	- Build Initial Playlist (GET)
+	- Save playlist Database (POST) 
+	- Return Session ID, friendly name
+- Session Status (GET)??
+	- session/[SessionId]/tracks (GET)
+	- return: list of tracks
+- Search for song (GET) 
+	- LOOKSPOTIFY
+- session/[sessionId]/tracks(PUT)
+	-parameters: 
+	{
+		tracks:[
+			{
+				"trackId":""
+				"vote":boolean
+			},
+			{
+				"trackId":""
+				"vote":boolean
+			}
+		]
+	}
+
+
+Database Structure
+==================
+- 
