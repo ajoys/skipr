@@ -66,7 +66,7 @@ def joinRoomByName():
     # design doc
     doc = app.db.design('query')
     # creating index to search database
-    index = doc.search('searchRoom')
+    index = doc.search('s')
     # search database for room name
     doc = index.get(params={'query':'name:'+roomName})
 
@@ -96,6 +96,35 @@ def getTracksForRoom(roomId=None):
         return jsonify({'tracks':room['tracks']})
     else:
         return jsonify(room), 404
+
+@app.route('/room/<roomId>/next', methods=['POST'])
+def getHighestVotedTrack(roomId=None):
+    room = app.db.document(roomId).get().json()
+    if 'tracks' in room:
+
+        if len(room['tracks']) == 0:
+            return jsonify({'error':'Empty playlist'}), 400
+
+        highestVotes = 0
+        highestVotesIndex = 0
+        i = -1
+        for track in room['tracks']:
+            i += 1
+            if track['votes'] > highestVotes:
+                highestVotesIndex = i
+                highestVotes = track['votes']
+
+        topTrack = room['tracks'].pop(highestVotesIndex)
+
+        resp = app.db.document(roomId).merge({'tracks': room['tracks']})
+
+        if resp.status_code == 201:
+            return jsonify({'topTrack':topTrack})
+        else:
+            return jsonify(resp.json()), resp.status_code
+    else:
+        return jsonify(room), 404
+
 
 
 def setupDB(services):
