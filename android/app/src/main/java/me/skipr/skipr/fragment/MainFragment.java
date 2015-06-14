@@ -15,13 +15,11 @@ import android.widget.Toast;
 import com.andtinder.model.CardModel;
 import com.andtinder.model.Orientations;
 import com.andtinder.view.CardContainer;
-import com.google.gson.Gson;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 
-import java.lang.reflect.Type;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import me.skipr.skipr.R;
@@ -29,10 +27,12 @@ import me.skipr.skipr.StackAdapter;
 import me.skipr.skipr.api.Constants;
 import me.skipr.skipr.api.SkiprApi;
 import me.skipr.skipr.api.Track;
+import me.skipr.skipr.api.VotedTrack;
 import me.skipr.skipr.model.SongCard;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
+import retrofit.android.AndroidLog;
 import retrofit.client.Response;
 
 /**
@@ -47,6 +47,7 @@ public class MainFragment extends Fragment{
     private StackAdapter mCardAdapter;
     private SkiprApi skiprApi;
     private Drawable defaultDrawable;
+    private List<VotedTrack> mVotedTracks = new ArrayList<VotedTrack>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -71,10 +72,26 @@ public class MainFragment extends Fragment{
         RestAdapter restAdapter;
         restAdapter = new RestAdapter.Builder()
                 .setEndpoint(Constants.URL)  //call your base url
+                .setLogLevel(RestAdapter.LogLevel.FULL).setLog(new AndroidLog("YOUR_LOG_TAG"))
                 .build();
         skiprApi = restAdapter.create(SkiprApi.class);
 
         defaultDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.picture1, null);
+
+        rootView.findViewById(R.id.like_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SongCard cardModel = (SongCard) mCardAdapter.pop();
+                reportLike(cardModel.getUniqueId());
+            }
+        });
+        rootView.findViewById(R.id.dislike_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SongCard cardModel = (SongCard) mCardAdapter.pop();
+                reportDislike(cardModel.getUniqueId());
+            }
+        });
 
         requestSongs();
         return rootView;
@@ -93,34 +110,70 @@ public class MainFragment extends Fragment{
     private void addSongToQueue(String uniqueId, String songTitle, String songAuthor, String image){
         final SongCard newCard = new SongCard(uniqueId, songTitle, songAuthor, defaultDrawable, image);
         newCard.setOnCardDimissedListener(new CardModel.OnCardDimissedListener() {
+            //yes these are reversed, because the library thinks left is like. we want the opposite
             @Override
             public void onLike() {
-                Log.d("liked", newCard.getTitle());
-                reportLike(newCard.getUniqueId());
+                Log.d("disliked", newCard.getTitle());
+                reportDislike(newCard.getUniqueId());
             }
 
             @Override
             public void onDislike() {
-                Log.d("disliked", newCard.getTitle());
-                reportDislike(newCard.getUniqueId());
+                Log.d("liked", newCard.getTitle());
+                reportLike(newCard.getUniqueId());
             }
         });
         mCardAdapter.add(newCard);
     }
 
     private void reportDislike(String uniqueId) {
-        //network call
+        VotedTrack votedTrack = new VotedTrack();
+        votedTrack.id = uniqueId;
+        votedTrack.weight = -1;
+        mVotedTracks.add(votedTrack);
+        sendListIfNeeded();
     }
 
     private void reportLike(String uniqueId){
-        //network call
+        VotedTrack votedTrack = new VotedTrack();
+        votedTrack.id = uniqueId;
+        votedTrack.weight = 1;
+        mVotedTracks.add(votedTrack);
+        sendListIfNeeded();
     }
 
+    private void sendListIfNeeded(){
+        if(mNumSongs == mVotedTracks.size()){
+            JSONObject jsonObject = new JSONObject();
+
+            for(VotedTrack track : mVotedTracks){
+                try {
+                    jsonObject.put(track.id, track.weight);
+                } catch (JSONException e) {
+                }
+            }
+
+            skiprApi.postVotedTracks(mRoomId, jsonObject, new Callback<String>() {
+                @Override
+                public void success(String s, Response response) {
+                    return;
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    return;
+                }
+            });
+        }
+    }
+
+    private int mNumSongs = 0;
     private void requestSongs(){
         final String roomId = mRoomId;
         skiprApi.tracks(roomId, new Callback<List<Track>>() {
             @Override
             public void success(List<Track> tracks, Response response) {
+                mNumSongs = tracks.size();
                 for(Track track : tracks){
                     addSongToQueue(track.id, track.name, track.artist, track.image);
                 }
@@ -132,21 +185,5 @@ public class MainFragment extends Fragment{
                 return;
             }
         });
-    }
-}
-
-class TrackDeserializer implements JsonDeserializer<Track>
-{
-    @Override
-    public Track deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
-            throws JsonParseException
-    {
-        // Get the "tracks" element from the parsed JSON
-        JsonElement content = je.getAsJsonObject().get("tracks");
-
-        // Deserialize it. You use a new instance of Gson to avoid infinite recursion
-        // to this deserializer
-        return new Gson().fromJson(content, Track.class);
-
     }
 }

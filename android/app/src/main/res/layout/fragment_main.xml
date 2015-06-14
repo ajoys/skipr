@@ -33,15 +33,17 @@
         android:paddingBottom="24dp">
 
         <ImageButton
+            android:id="@+id/dislike_button"
             android:layout_weight="1"
-            android:src="@drawable/ic_like"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
             android:layout_width="48dp"
             android:background="@null"
             android:layout_height="48dp" />
 
         <ImageButton
+            android:id="@+id/like_button"
             android:layout_weight="1"
-            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:src="@drawable/ic_like"
             android:layout_width="48dp"
             android:background="@null"
             android:layout_height="48dp" />
