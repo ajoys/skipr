@@ -75,6 +75,26 @@ def joinRoomByName():
         return jsonify({'error':'ERROR: ROOM NOT FOUND'}),404
     else:
         return addUserToRoom(doc.json()['rows'][0]['id'], userId)
+
+@app.route('/room/<roomName>/', methods=['GET'])
+def getRoomIdFromName(roomName=None):
+
+    # params to join room with pretty name
+    if roomName is not None:
+        roomName = roomName.upper()
+
+    # design doc
+    doc = app.db.design('query')
+    # creating index to search database
+    index = doc.search('searchRoom')
+    # search database for room name
+    doc = index.get(params={'query':'name:'+roomName})
+
+    # check to see if valid room is passed
+    if len(doc.json()['rows']) == 0:
+        return jsonify({'error':'ERROR: ROOM NOT FOUND'}),404
+    else:
+        return doc.json()['rows'][0]['id']
     
 def addUserToRoom(roomId, userId):
 
