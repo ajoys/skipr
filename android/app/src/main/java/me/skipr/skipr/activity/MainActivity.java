@@ -14,7 +14,7 @@ public class MainActivity extends BaseActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
-            String groupId = getIntent().getExtras().getString("group_id", "");
+            String groupId = getIntent().getExtras().getString("room_id", "");
             MainFragment mainFragment = MainFragment.newInstance(groupId) ;
             getFragmentManager().beginTransaction()
                     .add(R.id.container, mainFragment)
