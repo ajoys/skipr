@@ -20,11 +20,17 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
+            <data
+                android:host="callback"
+                android:scheme="skipr"/>
         </activity>
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name" >
         </activity>
+        <activity
+            android:name="com.spotify.sdk.android.authentication.LoginActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <meta-data android:name="io.branch.sdk.BranchKey" android:value="@string/bnc_app_key" />
     </application>
 
