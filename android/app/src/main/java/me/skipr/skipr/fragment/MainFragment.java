@@ -102,6 +102,7 @@ public class MainFragment extends BasePlayerActivity{
             }
         });
 
+
         requestSongs();
         return rootView;
     }

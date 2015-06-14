@@ -12,4 +12,12 @@
         android:adjustViewBounds="true"
         android:src="@drawable/skipr_logo_small"/>
 
+    <ImageView
+        android:id="@+id/share_button"
+        android:layout_width="42dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:paddingEnd="16dp"
+        android:src="@drawable/ic_share_white_36dp"/>
+
 </android.support.v7.widget.Toolbar>
