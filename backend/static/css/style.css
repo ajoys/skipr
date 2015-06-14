@@ -30,11 +30,17 @@ section:nth-of-type(even) {
   align-items: center; /* align vertical */
 }
 
-.intro h1 {
-  margin-bottom: 20%;
-  margin-left: 29%;
+.tagline {
+  margin-bottom: 200px;
   font-size: 4.5em;
   color: #FFFFFF;
+  position:static;
+}
+
+.background-img {
+  position: relative; 
+  margin-top:auto%;
+  margin-bottom:-10%; 
 }
 
 
