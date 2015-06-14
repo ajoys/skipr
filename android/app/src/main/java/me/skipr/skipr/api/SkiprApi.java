@@ -1,9 +1,13 @@
 package me.skipr.skipr.api;
 
 import retrofit.Callback;
+import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.GET;
+import retrofit.http.Multipart;
 import retrofit.http.POST;
+import retrofit.http.PUT;
+import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
@@ -12,10 +16,11 @@ import retrofit.http.Query;
  */
 public interface SkiprApi {
     /*Join room*/
-    @POST("/{roomId}/join")
+    @PUT("/{roomId}/join")
     public void join(@Path("roomId") String roomId, @Body String userId, Callback<String> callback);
 
     /*Create room*/
-    @POST("/create")
-    public void create(@Body String userId, @Body String token, Callback<String> callback);
+    @Multipart
+    @POST("/room")
+    public void create(@Part("userId") String userId, @Part("token") String token, Callback<RoomCreateResponse> callback);
 }

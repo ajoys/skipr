@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -22,6 +23,7 @@ import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 import me.skipr.skipr.R;
 import me.skipr.skipr.api.Constants;
+import me.skipr.skipr.api.RoomCreateResponse;
 import me.skipr.skipr.api.SkiprApi;
 import me.skipr.skipr.util.UserUtil;
 import retrofit.Callback;
@@ -58,11 +60,11 @@ public class SplashActivity extends Activity {
 
                 if (error == null) {
                     //go straight to the main activity if theres a room already selected
-                    if (referringParams.has("room_id")) {
+                    if (referringParams.has("room_name")) {
                         try {
-                            String roomId = referringParams.getString("room_id");
-                            if (!roomId.isEmpty()) {
-                                handleAutoJoinRoom(roomId);
+                            String roomName = referringParams.getString("room_name");
+                            if (!roomName.isEmpty()) {
+                                handleAutoJoinRoom(roomName);
                             }
                         } catch (JSONException e) {
                             //do nothing
@@ -89,8 +91,9 @@ public class SplashActivity extends Activity {
         mJoinEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(event.getAction() == KeyEvent.KEYCODE_ENTER){
+                if(actionId == EditorInfo.IME_ACTION_DONE){
                     handleJoinButtonClick();
+                    return true;
                 }
                 return false;
             }
@@ -117,13 +120,13 @@ public class SplashActivity extends Activity {
         skiprApi = restAdapter.create(SkiprApi.class);
     }
 
-    private void handleAutoJoinRoom(final String roomId) {
+    private void handleAutoJoinRoom(final String roomName) {
         showConnecting();
-        attemptToJoinRoom(roomId, new Callback<String>() {
+        attemptToJoinRoom(roomName, new Callback<String>() {
             @Override
-            public void success(String s, Response response) {
+            public void success(String roomId, Response response) {
                 hideConnecting();
-                launchMain(s);
+                launchMain(roomId, roomName);
             }
 
             @Override
@@ -136,17 +139,23 @@ public class SplashActivity extends Activity {
     }
 
     private void handleJoinButtonClick(){
-        final String roomId = mJoinEditText.getText().toString();
-        if(roomId.isEmpty()){
+        final String roomName = mJoinEditText.getText().toString();
+
+        if(roomName.equals("SwagDebug")){
+            launchMain("1", "SwagDebug");
+            return;
+        }
+
+        if(roomName.isEmpty()){
             mJoinEditText.setError("Please enter a valid room name");
             return;
         }
         showConnecting();
-        attemptToJoinRoom(roomId, new Callback<String>() {
+        attemptToJoinRoom(roomName, new Callback<String>() {
             @Override
-            public void success(String s, Response response) {
+            public void success(String roomId, Response response) {
                 hideConnecting();
-                launchMain(s);
+                launchMain(roomId, roomName);
             }
 
             @Override
@@ -197,11 +206,11 @@ public class SplashActivity extends Activity {
     }
 
     private void createRoom(String token){
-        skiprApi.create(UserUtil.getUserId(), token, new Callback<String>() {
+        skiprApi.create(UserUtil.getUserId(), token, new Callback<RoomCreateResponse>() {
             @Override
-            public void success(String s, Response response) {
+            public void success(RoomCreateResponse roomCreateResponse, Response response) {
                 hideConnecting();
-                launchMain(s);
+                launchMain(roomCreateResponse.id, roomCreateResponse.name);
             }
 
             @Override
@@ -210,12 +219,25 @@ public class SplashActivity extends Activity {
                 Toast.makeText(SplashActivity.this, "Error: could not create room", Toast.LENGTH_LONG).show();
             }
         });
+//        skiprApi.create(UserUtil.getUserId(), token, new Callback<String>() {
+//            @Override
+//            public void success(String s, Response response) {
+//                hideConnecting();
+//                launchMain(s);
+//            }
+//
+//            @Override
+//            public void failure(RetrofitError error) {
+//                hideConnecting();
+//                Toast.makeText(SplashActivity.this, "Error: could not create room", Toast.LENGTH_LONG).show();
+//            }
+//        });
     }
 
-    private void launchMain(String roomId){
-
+    private void launchMain(String roomId, String roomName){
         Intent launchMainIntent = new Intent(SplashActivity.this, MainActivity.class);
         launchMainIntent.putExtra("room_id", roomId);
+        launchMainIntent.putExtra("room_name", roomName);
         startActivity(launchMainIntent);
     }
 
