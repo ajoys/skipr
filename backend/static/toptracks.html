@@ -36,7 +36,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <img src="assets/skipr-logo.png" alt="Skipr" style="width:168px;height:70px;">
+          <a href="index.html"><img src="assets/skipr-logo.png" alt="Skipr" style="width:168px;height:70px;"></a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
@@ -111,7 +111,7 @@
             var newHTML = [];
 
               for (var i = 0; i < 5; i++) {
-                  newHTML.push('<div class="row">'+ '<div class="col-md-3"></div><div class="col-md-1"><h3>' + (i+1) + '.</h3></div>' +'<div class="col-md-3"><img src="' + tracks[i].image + '" style="height:200px;width=200px;"></img></div><div class="col-md-2">' + tracks[i].name + '<div class="row"><div class="col-md-2">' + tracks[i].artist + '</div></div></div><div class="col-md-3"></div></div>');
+                  newHTML.push('<div class="row">'+ '<div class="col-md-3"></div><div class="col-md-1"><h3>' + (i+1) + '.</h3></div>' +'<div class="col-md-3"><img src="' + tracks[i].image + '" style="height:200px;width=200px;"></img></div><div class="col-md-3">' + tracks[i].name + '<div class="row"><div style="padding-left:15px">' + tracks[i].artist + '</div></div></div><div class="col-md-2"></div></div>');
               }
               $(".element").html(newHTML.join(""));
           }
@@ -120,7 +120,7 @@
           console.log(d);
         });
       });
-        t=setTimeout("pollResults()",3000);
+        // t=setTimeout("pollResults()",3000);
       }
 
     </script>
