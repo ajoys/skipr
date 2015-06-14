@@ -210,12 +210,12 @@ public class SplashActivity extends Activity {
         }
     }
 
-    private void createRoom(String token){
+    private void createRoom(final String token){
         skiprApi.create(UserUtil.getUserId(), token, new Callback<RoomCreateResponse>() {
             @Override
             public void success(RoomCreateResponse roomCreateResponse, Response response) {
                 hideConnecting();
-                launchMain(roomCreateResponse.id, roomCreateResponse.name);
+                launchMain(roomCreateResponse.id, roomCreateResponse.name, token);
             }
 
             @Override
@@ -243,6 +243,16 @@ public class SplashActivity extends Activity {
         Intent launchMainIntent = new Intent(SplashActivity.this, MainActivity.class);
         launchMainIntent.putExtra("room_id", roomId);
         launchMainIntent.putExtra("room_name", roomName);
+        launchMainIntent.putExtra("isPlayer", false);
+        startActivity(launchMainIntent);
+    }
+
+    private void launchMain(String roomId, String roomName, String token){
+        Intent launchMainIntent = new Intent(SplashActivity.this, MainActivity.class);
+        launchMainIntent.putExtra("room_id", roomId);
+        launchMainIntent.putExtra("room_name", roomName);
+        launchMainIntent.putExtra("token", token);
+        launchMainIntent.putExtra("isPlayer", true);
         startActivity(launchMainIntent);
     }
 
