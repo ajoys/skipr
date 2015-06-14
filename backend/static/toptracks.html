@@ -43,13 +43,9 @@
     <section>
       <div class="container">
         <h2>Enter Room Id:</h2>
-        <form>
-          <fieldset>
-            <input type="text" name="roomName">
+            <input type="textbox" name="roomName" id="roomName">
             <br>
             <input type="submit" value="Submit" id="submit">
-          </fieldset>
-        </form>
       </div>
     </section>
     <section>
@@ -60,14 +56,13 @@
 
     <script>
       $( "#submit" ).click(function() {
-        alert('sup')
-        $.ajax({
-          url: '/join',
-          type: 'PUT',
-          data: "name=John&location=Boston",
-          success: function(data) {
-            alert('Load was performed.');
-          }
+        alert('sup');
+        $.getJSON('http://skipr.me/room/DISTURBED%20KANGAROO', function(json_data){
+          alert(JSON.stringify(json_data));
+          })
+        .fail(function(d){
+          alert('fail ' + d.toString())
+          console.log(d);
         });
       });
     </script>
