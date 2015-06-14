@@ -1,4 +1,5 @@
 from flask import Flask, request, send_from_directory, jsonify
+from flaskutils import crossdomain
 from getSessionName import getRoomName
 import spotify
 from spotify import Spotify
@@ -57,6 +58,7 @@ def joinRoomById(roomId=None):
     return response
 
 @app.route('/join', methods=['PUT'])
+@crossdomain(origin='*')
 def joinRoomByName():
 
     # params to join room with pretty name
@@ -109,6 +111,7 @@ def getTracksForRoom(roomId=None):
 
 
 @app.route('/room/<roomId>/tracks/sorted', methods=['GET'])
+@crossdomain(origin='*')
 def getHighestVotedTracks(roomId=None):
     room = app.db.document(roomId).get().json()
     if 'tracks' in room:
