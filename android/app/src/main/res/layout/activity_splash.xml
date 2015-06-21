@@ -35,7 +35,9 @@
             android:gravity="center_horizontal"
             android:imeOptions="actionDone"
             android:maxLines="1"
-            android:hint="@string/room_name_hint"/>
+            android:hint="@string/room_name_hint"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#ffe6e6e6" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -48,14 +50,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAllCaps="true"
-                android:text="@string/join"/>
+                android:text="@string/join"
+                android:textColor="#FFFFFF" />
 
             <Button
                 android:id="@+id/splash_create_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAllCaps="true"
-                android:text="@string/create"/>
+                android:text="@string/create"
+                android:textColor="#FFFFFF" />
 
         </LinearLayout>
 
