@@ -9,7 +9,7 @@
         android:scaleType="centerCrop"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:src="@drawable/bg_1024"/>
+        android:src="@drawable/bg"/>
 
     <LinearLayout
         android:layout_alignParentBottom="true"
