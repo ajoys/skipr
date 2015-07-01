@@ -178,6 +178,10 @@ public class BasePlayerActivity extends Fragment implements
     @Override
     public void onPlaybackEvent(EventType eventType, PlayerState playerState) {
         Log.d("MainActivity", "Playback event received: " + eventType.name());
+        if(eventType.equals(EventType.TRACK_END)){
+            deleteSong(mCurrentSong.id);
+        }
+
     }
 
     @Override
