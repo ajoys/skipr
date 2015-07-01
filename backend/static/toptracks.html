@@ -65,11 +65,9 @@
         <div class="row">
           <div class="col-lg-3"></div>
           <div class="col-lg-6">
-            <div class="input-group">
+            <div class="form text-center">
               <input type="text" class="form-control" placeholder="Search for..." id="roomName">
-              <span class="input-group-btn">
-                <button class="btn btn-default" type="button" id="submit">Go!</button>
-              </span>
+                <button class="btn btn-warning" type="button" id="submit">Go!</button>
             </div>
           </div>
         </div>
@@ -81,6 +79,13 @@
 
     <script>
       var inputValue
+      $(document).ready(function(){
+          $('#roomName').keypress(function(e){
+            if(e.keyCode==13)
+            $('#submit').click();
+          });
+      });
+      
       $( "#submit" ).click(function() {
         inputValue = $("input").val().trim().replace(' ', '%20').toUpperCase();
         pollResults();
