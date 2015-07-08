@@ -2,17 +2,18 @@ body {
   padding-top: 70px;
 }
 
+p {
+  font-size: 14px;
+}
+
 section {
   width: 100%;
   padding: 0 7%;
+  padding-top: 50px;
   margin: 0;
   max-width: 100%;
   background-color: #FFFFFF;
   height: 100vh;
-}
-
-section:nth-of-type(even) {
-    background-color: #FF5722;
 }
 
 .intro {
@@ -39,6 +40,11 @@ section:nth-of-type(even) {
 
 .icon-bar {
   background-color: rgba(255,255,255,0.8) !important;
+}
+
+.action-item {
+  padding-top: 30px;
+  padding-bottom: 30px;
 }
 
 .btn{
