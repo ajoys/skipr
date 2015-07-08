@@ -37,6 +37,10 @@ section:nth-of-type(even) {
   transform: translateY(-30%);
 }
 
+.icon-bar {
+  background-color: rgba(255,255,255,0.8) !important;
+}
+
 .btn{
   margin-top:20px;
   padding-left: 40px;
