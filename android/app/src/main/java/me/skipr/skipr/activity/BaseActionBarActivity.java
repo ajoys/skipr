@@ -22,6 +22,7 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
         setContentView(getLayoutId());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setTitle("");
 
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
