@@ -23,6 +23,7 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle("");
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
