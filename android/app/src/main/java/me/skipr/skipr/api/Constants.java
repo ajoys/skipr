@@ -5,4 +5,6 @@ package me.skipr.skipr.api;
  */
 public interface Constants{
     public String URL = "http://skipr.me";
+    public static final int REQUEST_CODE_SPOTIFY = 1337;
+    public static final String REDIRECT_URI = "skipr://callback";
 }
