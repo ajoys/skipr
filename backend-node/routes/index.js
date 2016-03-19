@@ -21,9 +21,27 @@ router.put('/room', function (req, res, next) {
     createRoom(userId, token, res);
 });
 
-/* for testing the new room route manually */
-router.get('/test-room-create', function (req, res, next) {
-    createRoom("1234", "{hardcoded token goes here}", res);
+/* join room by roomId */
+router.put('/room/:roomId/join', function (req, res, next) {
+    var roomId = req.params.roomId;
+    var userId = req.body.userid;
+    addUserToRoom(roomId, userId, function(room){
+        res.send(room);
+    });
+});
+
+/* join room by name - NOT TESTED YET :D */
+router.put('/join', function (req, res, next) {
+    var userId = req.body.userId;
+    var roomName = req.body.roomName.toUpperCase();
+    
+    Room.findOne({name: roomName}, function(err, room){
+        if(err){
+            console.log(err);
+        } else {
+            addUserToRoom(room.id, userId);
+        }
+    });
 });
 
 var createRoom = function (userId, token, res) {
@@ -49,6 +67,22 @@ var createRoom = function (userId, token, res) {
         });
 
     }, console.log);
+};
+
+
+var addUserToRoom = function (roomId, userId, next) {
+    Room.findByIdAndUpdate(
+        roomId,
+        {$push: {users: userId}},
+        {safe: true, upsert: true, new : true},
+        function(err, room) {
+            if (err) {
+                console.log(err);
+            } else {
+                next(room);
+            }
+        }
+    );
 };
 
 module.exports = router;
