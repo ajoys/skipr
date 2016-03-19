@@ -18,9 +18,9 @@ exports.getPlaylistTrack = function (spotifyAuth, userId, playlistId, next, err)
         resp.setEncoding('utf8');
         resp.on('data', function (data) {
             str += data;
-
         });
         resp.on('end', function () {
+            console.log(str);
             var dataJson = JSON.parse(str);
             if (dataJson.tracks.items[0].track.name.indexOf("Intro") > -1) {
                 dataJson.tracks.items.remove(0);
