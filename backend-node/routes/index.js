@@ -138,6 +138,69 @@ router.get('/room/:roomId/next', function (req, res, next) {
     });
 });
 
+//TODO: test this. probably doesnt work - need to fix pull arg
+/* delete a track */
+router.delete('/room/:roomId/tracks/:trackId', function (req, res, next) {
+    var roomId = req.params.roomId;
+    var trackId = req.params.trackId;
+    Room.findByIdAndUpdate(
+        roomId,
+        {$pull: {tracks: trackId}},
+        {safe: true, upsert: true, new : true},
+        function(err, room) {
+            if (err) {
+                console.log(err);
+                res.status(200).send("warning: track not found");
+            } else {
+                res.send(room);
+            }
+        }
+    );
+});
+
+/* vote on tracks */
+//TODO: test this. will probably explode.
+router.put('/room/:roomId/vote', function (req, res, next) {
+    var roomId = req.params.roomId;
+    var userId = req.body.userId;
+    var ratedTracks = req.body.tracks;
+    Room.findById(roomId, function(err, room){
+        if(err){
+            console.log(err);
+        } else if(room){
+            var changed = 0;
+            for(var i = 0; i < room.tracks.length; i++){
+                var track = room.tracks[i];
+                if(ratedTracks.indexOf(track.id) != -1){
+                    if(track.votes.indexOf(userId) == -1){
+                        track.votes += ratedTracks[track.id];
+                        track.voters.push(userId);
+                        changed++;
+                    }
+                }
+            }
+
+            Room.findByIdAndUpdate(
+                roomId,
+                {$set: {tracks: room.tracks}},
+                {safe: true, upsert: true, new : true},
+                function(err, room) {
+                    if (err) {
+                        console.log(err);
+                        res.status(200).send("warning: unable to update room");
+                    } else {
+                        room.votedFor = changed;
+                        res.send(room);
+                    }
+                }
+            );
+
+        } else {
+            res.status(404).send("Error: cannot find room");
+        }
+    });
+});
+
 var createRoom = function (userId, token, res) {
     var roomName = roomnameutil.getRoomName();
     var spotifyAuth = {token : token};

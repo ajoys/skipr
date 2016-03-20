@@ -13,6 +13,7 @@ var TrackSchema = new Schema({
     'voters': [String]
 });
 
+//TODO: do subdocuments by ID instead
 var RoomSchema = new Schema({
         createdAt: { type: Date, default: Date.now },
         name: String,
