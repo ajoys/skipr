@@ -38,15 +38,31 @@ router.put('/join', function (req, res, next) {
     Room.findOne({name: roomName}, function(err, room){
         if(err){
             console.log(err);
-        } else {
+        } else if(room){
             addUserToRoom(room.id, userId);
+        } else {
+            res.status(404).send("Error: cannot find room");
+        }
+    });
+});
+
+/* get room id from name */
+router.get('/room/:roomName', function (req, res, next) {
+    var roomName = req.params.roomName.toUpperCase();
+    Room.findOne({name: roomName}, function(err, room){
+        if(err){
+            console.log(err);
+        } else if(room){
+            res.send(room.id);
+        } else {
+            res.status(404).send("Error: cannot find room");
         }
     });
 });
 
 var createRoom = function (userId, token, res) {
     var roomName = roomnameutil.getRoomName();
-    var spotifyAuth = {token: token};
+    var spotifyAuth = {token : token};
     spotify.getPlaylistTrack(spotifyAuth, "spotify", spotify.PLAYLIST_ID_TOP_50, function (tracks) {
 
         var room = new Room({

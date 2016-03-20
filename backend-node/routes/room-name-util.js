@@ -1,5 +1,5 @@
 var getRoomName = function(){
-    return "Todo";
+    return "TODO";
 };
 
 exports.getRoomName = getRoomName;

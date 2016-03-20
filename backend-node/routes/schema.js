@@ -23,5 +23,10 @@ var RoomSchema = new Schema({
     }
 );
 
+RoomSchema.pre('save', function(next){
+    this.name = this.name.toUpperCase();
+    next();
+});
+
 exports.Track = mongoose.model('Track', TrackSchema);
 exports.Room = mongoose.model('Room', RoomSchema);
