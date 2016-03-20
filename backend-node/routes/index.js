@@ -86,6 +86,34 @@ router.get('/room/:roomId/track', function (req, res, next) {
     });
 });
 
+//TODO: test this
+/* get highest voted tracks for room */
+router.get('/room/:roomId/tracks/sorted', function (req, res, next) {
+    var roomId = req.params.roomId;
+    Room.findById(roomId, function(err, room){
+        if(err){
+            console.log(err);
+        } else if(room){
+            if(room.tracks && room.tracks.length > 0){
+
+                // todo: perf? maybe extract this as a func with callback
+                room.tracks.sort(function(a, b) {
+                    return b.votes - a.votes;
+                });
+                res.send(room.tracks);
+
+            } else {
+                res.status(400).send("Error: empty playlist");
+            }
+            res.send(room.tracks);
+        } else {
+            res.status(404).send("Error: cannot find room");
+        }
+    });
+});
+
+
+
 var createRoom = function (userId, token, res) {
     var roomName = roomnameutil.getRoomName();
     var spotifyAuth = {token : token};
