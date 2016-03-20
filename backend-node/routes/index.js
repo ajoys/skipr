@@ -30,7 +30,7 @@ router.put('/room/:roomId/join', function (req, res, next) {
     });
 });
 
-/* join room by name - NOT TESTED YET :D */
+/* join room by name - todo: test this route*/
 router.put('/join', function (req, res, next) {
     var userId = req.body.userId;
     var roomName = req.body.roomName.toUpperCase();
@@ -54,6 +54,32 @@ router.get('/room/:roomName', function (req, res, next) {
             console.log(err);
         } else if(room){
             res.send(room.id);
+        } else {
+            res.status(404).send("Error: cannot find room");
+        }
+    });
+});
+
+/* get tracks for room */
+router.get('/room/:roomId/track', function (req, res, next) {
+    var roomId = req.params.roomId;
+    var userId = req.body.userId;
+    Room.findById(roomId, function(err, room){
+        if(err){
+            console.log(err);
+        } else if(room){
+            var tracks = [];
+            if(userId){
+                // todo: test this case
+                for(var i = 0; i < room.tracks.length; i++){
+                    if(room.tracks[i].voters.indexOf(userId) > -1){
+                        tracks.push(room.tracks[i]);
+                    }
+                }
+            } else{
+                tracks = room.tracks;
+            }
+            res.send(room.tracks);
         } else {
             res.status(404).send("Error: cannot find room");
         }
