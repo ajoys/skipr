@@ -1,54 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <com.andtinder.view.CardContainer
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.andtinder.view.CardContainer xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/card_container"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_alignParentTop="true"
         android:layout_above="@+id/room_name"
-        />
-
-
+        android:layout_alignParentTop="true" />
 
     <TextView
         android:id="@+id/room_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:layout_alignParentBottom="true"
         android:layout_marginBottom="18dp"
         android:gravity="center"
-        android:layout_alignParentBottom="true"
-        />
+        android:textSize="18sp" />
 
     <LinearLayout
         android:id="@+id/vote_bar"
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:orientation="horizontal"
-        android:visibility="gone"
+        android:paddingBottom="24dp"
         android:paddingTop="24dp"
-        android:paddingBottom="24dp">
+        android:visibility="gone">
 
         <ImageButton
             android:id="@+id/dislike_button"
-            android:layout_weight="1"
-            android:src="@android:drawable/ic_menu_close_clear_cancel"
             android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
             android:background="@null"
-            android:layout_height="48dp" />
+            android:src="@android:drawable/ic_menu_close_clear_cancel" />
 
         <ImageButton
             android:id="@+id/like_button"
-            android:layout_weight="1"
-            android:src="@drawable/ic_like"
             android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
             android:background="@null"
-            android:layout_height="48dp" />
+            android:src="@drawable/ic_like" />
 
     </LinearLayout>
 
