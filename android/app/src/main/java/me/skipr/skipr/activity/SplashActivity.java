@@ -44,9 +44,6 @@ public class SplashActivity extends Activity {
 
     private SkiprApi skiprApi;
 
-    private static final int REQUEST_CODE_SPOTIFY = 1337;
-    private static final String REDIRECT_URI = "skipr://callback";
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -105,12 +102,12 @@ public class SplashActivity extends Activity {
             public void onClick(View v) {
                 //get spotify token
                 showConnecting();
-                AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(getResources().getString(R.string.client_id), AuthenticationResponse.Type.TOKEN, REDIRECT_URI);
+                AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(getResources().getString(R.string.client_id), AuthenticationResponse.Type.TOKEN, Constants.REDIRECT_URI);
 
                 builder.setScopes(new String[]{"streaming"});
                 AuthenticationRequest request = builder.build();
 
-                AuthenticationClient.openLoginActivity(SplashActivity.this, REQUEST_CODE_SPOTIFY, request);
+                AuthenticationClient.openLoginActivity(SplashActivity.this, Constants.REQUEST_CODE_SPOTIFY, request);
             }
         });
 
@@ -224,19 +221,6 @@ public class SplashActivity extends Activity {
                 Toast.makeText(SplashActivity.this, "Error: could not create room", Toast.LENGTH_LONG).show();
             }
         });
-//        skiprApi.create(UserUtil.getUserId(), token, new Callback<String>() {
-//            @Override
-//            public void success(String s, Response response) {
-//                hideConnecting();
-//                launchMain(s);
-//            }
-//
-//            @Override
-//            public void failure(RetrofitError error) {
-//                hideConnecting();
-//                Toast.makeText(SplashActivity.this, "Error: could not create room", Toast.LENGTH_LONG).show();
-//            }
-//        });
     }
 
     private void launchMain(String roomId, String roomName){
